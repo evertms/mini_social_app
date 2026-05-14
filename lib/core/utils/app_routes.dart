@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import '../../features/post/presentation/pages/post_list_page.dart';
+import '../../features/post/presentation/pages/favorites_page.dart';
 
 // Este archivo centraliza la navegación de la app siguiendo SRP.
 // Se ubica en lib/core/utils/ o lib/app_routes.dart (según escala).
@@ -18,10 +19,10 @@ final GoRouter router = GoRouter(
     //   name: 'create_post',
     //   builder: (context, state) => const CreatePostPage(),
     // ),
-    // GoRoute(
-    //   path: '/favorites',
-    //   name: 'favorites',
-    //   builder: (context, state) => const FavoritesPage(),
-    // ),
+    GoRoute(
+      path: '/favorites',
+      name: 'favorites',
+      builder: (context, state) => const FavoritesPage(),
+    ),
   ],
 );
