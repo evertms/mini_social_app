@@ -23,7 +23,7 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-# Flutter/Dart/Pub related
+# Flutter/Dart/Pub related/env
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+.env
 
 # Symbolication related
 app.*.symbols
