@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/post/presentation/pages/post_list_page.dart';
 
 // Este archivo centraliza la navegación de la app siguiendo SRP.
 // Se ubica en lib/core/utils/ o lib/app_routes.dart (según escala).
@@ -10,9 +10,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       name: 'post_list',
-      builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Post List Page (Placeholder)')),
-      ),
+      builder: (context, state) => const PostListPage(),
     ),
     // Ejemplo de cómo se añadirían el resto:
     // GoRoute(
