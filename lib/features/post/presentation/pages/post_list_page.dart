@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/theme/theme_cubit.dart';
 
 import '../../data/repositories/mock_post_repository.dart';
 import '../blocs/post_list_state.dart';
@@ -29,7 +30,27 @@ class _PostListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mini Social App')),
+      appBar: AppBar(
+        title: const Text('Mini Social App'),
+        actions: [
+          BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, themeMode) {
+              return IconButton(
+                icon: Icon(themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+                onPressed: () {
+                  context.read<ThemeCubit>().toggleTheme();
+                },
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              context.push('/favorites');
+            },
+          ),
+        ],
+      ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -48,6 +69,7 @@ class _PostListView extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
 
+      
       body: BlocBuilder<PostListBloc, PostListState>(
         builder: (context, state) {
           if (state is PostListLoading) {

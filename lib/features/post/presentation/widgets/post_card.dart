@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../domain/entities/post.dart';
 import '../../utils/format_timestamp.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/favorites_bloc.dart';
+import '../blocs/favorites_event.dart';
+import '../blocs/favorites_state.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -11,6 +15,13 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final favState = context.watch<FavoritesBloc>().state;
+    bool isFavorite = post.isFavorite;
+
+    if (favState is FavoritesLoaded) {
+      isFavorite = favState.favorites.any((f) => f.id == post.id);
+    }
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
@@ -30,21 +41,19 @@ class PostCard extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<FavoritesBloc>().add(
+                      ToggleFavoriteEvent(post),
+                    );
+                  },
                   icon: Icon(
-                    post.isFavorite
-                        ? Icons.favorite
-                        : Icons.favorite_border,
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              post.body,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
+            Text(post.body, maxLines: 3, overflow: TextOverflow.ellipsis),
             const SizedBox(height: 12),
             Row(
               children: [

@@ -5,8 +5,7 @@ import 'package:mini_social_app/features/post/presentation/blocs/create_post_blo
 import '../../features/post/presentation/pages/post_list_page.dart';
 import '../../features/post/presentation/pages/create_post_page.dart';
 import '../../features/post/data/repositories/mock_post_repository.dart';
-// Este archivo centraliza la navegación de la app siguiendo SRP.
-// Se ubica en lib/core/utils/ o lib/app_routes.dart (según escala).
+import '../../features/post/presentation/pages/favorites_page.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -16,7 +15,6 @@ final GoRouter router = GoRouter(
       name: 'post_list',
       builder: (context, state) => const PostListPage(),
     ),
-    // Ejemplo de cómo se añadirían el resto:
     GoRoute(
       path: '/create-post',
       name: 'create_post',
@@ -29,10 +27,10 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-    // GoRoute(
-    //   path: '/favorites',
-    //   name: 'favorites',
-    //   builder: (context, state) => const FavoritesPage(),
-    // ),
+    GoRoute(
+      path: '/favorites',
+      name: 'favorites',
+      builder: (context, state) => const FavoritesPage(),
+    ),
   ],
 );
