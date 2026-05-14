@@ -51,6 +51,25 @@ class _PostListView extends StatelessWidget {
           ),
         ],
       ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // Navegamos a tu pantalla y esperamos a que se cierre
+          final result = await context.pushNamed('create_post');
+
+          // Si la creación fue exitosa (tu pantalla devolvió 'true')
+          if (result == true) {
+            // Verificamos que esta pantalla siga activa en la memoria
+            if (context.mounted) {
+              // Le decimos al BLoC de la lista que vuelva a pedir los datos
+              context.read<PostListBloc>().add(const FetchPostsRequested());
+            }
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
+
+      
       body: BlocBuilder<PostListBloc, PostListState>(
         builder: (context, state) {
           if (state is PostListLoading) {
