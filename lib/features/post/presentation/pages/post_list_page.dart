@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/repositories/mock_post_repository.dart';
 import '../blocs/post_list_state.dart';
@@ -29,6 +30,24 @@ class _PostListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Mini Social App')),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // Navegamos a tu pantalla y esperamos a que se cierre
+          final result = await context.pushNamed('create_post');
+
+          // Si la creación fue exitosa (tu pantalla devolvió 'true')
+          if (result == true) {
+            // Verificamos que esta pantalla siga activa en la memoria
+            if (context.mounted) {
+              // Le decimos al BLoC de la lista que vuelva a pedir los datos
+              context.read<PostListBloc>().add(const FetchPostsRequested());
+            }
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
+
       body: BlocBuilder<PostListBloc, PostListState>(
         builder: (context, state) {
           if (state is PostListLoading) {
