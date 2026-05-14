@@ -21,14 +21,14 @@ class MockRepository implements PostRepository {
     final prefs = await SharedPreferences.getInstance();
     final prefsService = PrefsService(prefs);
     final favIds = prefsService.getFavIds();
-    
+
     final posts = await getPosts();
     return posts.where((post) => favIds.contains(post.id)).toList();
   }
 
   @override
   Future<List<Post>> getPosts() async {
-    await Future<void>.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(const Duration(milliseconds: 200));
 
     if (shouldFail) {
       throw Exception("No se pudieron cargar los posts");
@@ -81,7 +81,7 @@ class MockRepository implements PostRepository {
 
   @override
   Future<void> toggleFavorite(Post post) async {
-    await Future<void>.delayed(const Duration(seconds: 1));
+    await Future<void>.delayed(const Duration(milliseconds: 200));
     final prefs = await SharedPreferences.getInstance();
     final prefsService = PrefsService(prefs);
     await prefsService.toggleFavId(post.id);

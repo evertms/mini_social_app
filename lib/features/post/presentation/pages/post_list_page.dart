@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/repositories/mock_post_repository.dart';
 import '../blocs/post_list_state.dart';
@@ -28,7 +29,17 @@ class _PostListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mini Social App')),
+      appBar: AppBar(
+        title: const Text('Mini Social App'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              context.push('/favorites');
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<PostListBloc, PostListState>(
         builder: (context, state) {
           if (state is PostListLoading) {

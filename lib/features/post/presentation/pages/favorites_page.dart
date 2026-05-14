@@ -1,91 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/repositories/mock_post_repository.dart';
-import '../../domain/entities/post.dart';
+import '../blocs/favorites_bloc.dart';
+import '../blocs/favorites_state.dart';
+import '../blocs/favorites_event.dart';
 import '../widgets/post_card.dart';
 import '../widgets/message_view.dart';
 
-class FavoritesPage extends StatefulWidget {
+class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
-
-  @override
-  State<FavoritesPage> createState() => _FavoritesPageState();
-}
-
-class _FavoritesPageState extends State<FavoritesPage> {
-  bool _isLoading = true;
-  List<Post> _favoritePosts = [];
-  String? _errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavorites();
-  }
-
-  Future<void> _loadFavorites() async {
-    try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      final repository = MockRepository();
-      final favoritePosts = await repository.getFavorites();
-
-      favoritePosts.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-      setState(() {
-        _favoritePosts = favoritePosts;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Ocurrió un error al cargar los favoritos';
-        _isLoading = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Favoritos')),
-      body: _buildBody(),
-    );
-  }
+      body: BlocBuilder<FavoritesBloc, FavoritesState>(
+        builder: (context, state) {
+          if (state is FavoritesLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-  Widget _buildBody() {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+          if (state is FavoritesError) {
+            return MessageView(
+              icon: Icons.error_outline,
+              message: state.message,
+              actionLabel: 'Reintentar',
+              onPressed: () {
+                context.read<FavoritesBloc>().add(LoadFavoritesEvent());
+              },
+            );
+          }
 
-    if (_errorMessage != null) {
-      return MessageView(
-        icon: Icons.error_outline,
-        message: _errorMessage!,
-        actionLabel: 'Reintentar',
-        onPressed: _loadFavorites,
-      );
-    }
+          if (state is FavoritesLoaded) {
+            if (state.favorites.isEmpty) {
+              return MessageView(
+                icon: Icons.favorite_border,
+                message: 'No tienes posts favoritos aún',
+                actionLabel: 'Recargar',
+                onPressed: () {
+                  context.read<FavoritesBloc>().add(LoadFavoritesEvent());
+                },
+              );
+            }
 
-    if (_favoritePosts.isEmpty) {
-      return MessageView(
-        icon: Icons.favorite_border,
-        message: 'No tienes posts favoritos aún',
-        actionLabel: 'Recargar',
-        onPressed: _loadFavorites,
-      );
-    }
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<FavoritesBloc>().add(LoadFavoritesEvent());
+              },
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: state.favorites.length,
+                itemBuilder: (context, index) {
+                  final post = state.favorites[index];
+                  return PostCard(post: post);
+                },
+              ),
+            );
+          }
 
-    return RefreshIndicator(
-      onRefresh: _loadFavorites,
-      child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _favoritePosts.length,
-        itemBuilder: (context, index) {
-          final post = _favoritePosts[index];
-          return PostCard(post: post);
+          return const SizedBox.shrink();
         },
       ),
     );
