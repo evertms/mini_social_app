@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mini_social_app/features/post/domain/repositories/post_repository.dart';
-import 'package:mini_social_app/features/post/presentation/blocs/post_list_state.dart';
+import '../../domain/repositories/post_repository.dart';
+import 'post_list_state.dart';
 import 'post_list_event.dart';
 
 class PostListBloc extends Bloc<PostListEvent, PostListState> {
